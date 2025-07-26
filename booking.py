@@ -17,31 +17,54 @@ import uuid
 import os
 from dotenv import load_dotenv
 
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
+log_path = os.path.join(BASE_DIR, "availability.log")
+dotenv_path = os.path.join(BASE_DIR, "BOOKING.env")
 
 logging.getLogger("WDM").setLevel(logging.ERROR)
 logging.getLogger("urllib3").setLevel(logging.ERROR)
 
 logger = setup_logger(
-    name="opora_checker", log_file="/Users/dorbourshan/Documents/availability.log"
+    name="opora_checker", log_file=log_path
 )
-load_dotenv(dotenv_path=r'/Users/dorbourshan/Documents/BOOKING.env')
+
+
+if os.path.exists(dotenv_path):
+    load_dotenv(dotenv_path=dotenv_path)
+else:
+    logger.info("No .env file found, loading environment variables from system.")
+
 email_user = os.getenv("EMAIL_USER")
 email_password = os.getenv("EMAIL_PASSWORD")
+
+if not email_user or not email_password:
+    logger.error("EMAIL_USER or EMAIL_PASSWORD environment variables not set!")
+    raise ValueError("EMAIL_USER or EMAIL_PASSWORD environment variables not set!")
+
 recipients_str = os.getenv("EMAIL_RECIPIENTS", "")
 recipients = [email.strip() for email in recipients_str.split(",") if email.strip()]
+
+
 
 def get_driver():
     """Initialize and return a headless Chrome WebDriver."""
     options = Options()
-    options.add_argument("--headless")
+    options.add_argument("--headless=new")  
     options.add_argument("--disable-gpu")
     options.add_argument("--no-sandbox")
+    options.add_argument("--disable-dev-shm-usage")
+    
     options.add_argument("--window-size=1920,1080")
+    options.add_argument("--disable-software-rasterizer")
+    options.add_argument("--remote-debugging-port=9222")
+
     options.add_argument(
         "user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
         "AppleWebKit/537.36 (KHTML, like Gecko) "
         "Chrome/116.0.0.0 Safari/537.36"
     )
+
     service = Service(ChromeDriverManager().install())
     return webdriver.Chrome(service=service, options=options)
 
