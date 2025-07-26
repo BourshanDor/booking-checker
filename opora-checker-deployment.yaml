@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: opora-checker-deployment
+  labels:
+    app: opora-checker
+spec:
+  replicas: 1 
+  selector:
+    matchLabels:
+      app: opora-checker
+  template:
+    metadata:
+      labels:
+        app: opora-checker
+    spec:
+      containers:
+      - name: opora-checker-container
+        image: europe-west1-docker.pkg.dev/booking-project-467112/opora-checker-repo/opora-checker
+        command: ["python3", "booking.py", "--loop", "--max_price", "1500"]
+        resources:
+          requests: 
+            memory: "4Gi"
+            cpu: "250m" 
+          limits:  
+            memory: "4Gi"
+            cpu: "500m" 
+        env:
+        - name: DISPLAY
+          value: ":99"
+        - name: DBUS_SESSION_BUS_ADDRESS
+          value: "/dev/null" 
