@@ -2,6 +2,8 @@
 
 Python script to automatically check room availability and send email notifications when rooms are available within a specified price range.
 
+<img width="605" height="538" alt="image" src="https://github.com/user-attachments/assets/bd3cfdb8-6916-42fd-b3bd-7ff29fdee40d" />
+
 
 ## Requirements
 
