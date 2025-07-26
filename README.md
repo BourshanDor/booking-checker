@@ -1,6 +1,6 @@
 # Booking Availability Checker
 
-Python script to automatically check room availability booking site and send email notifications when rooms are available within a specified price range.
+Python script to automatically check room availability and send email notifications when rooms are available within a specified price range.
 
 
 ## Requirements
